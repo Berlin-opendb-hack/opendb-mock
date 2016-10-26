@@ -1,0 +1,270 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  OpendbHackAddress:
+    description: OpendbHackAddress media type (default view)
+    example:
+      city: Itaque nisi possimus aut vel vel.
+      country: Perferendis pariatur ut non non quia rerum.
+      houseNumber: Ut architecto est commodi qui dolorum dignissimos.
+      street: Illum eos consectetur ducimus.
+      type: Quod sunt quia.
+      zip: Reiciendis non quae velit iste impedit debitis.
+    properties:
+      city:
+        description: City,
+        example: Itaque nisi possimus aut vel vel.
+        type: string
+      country:
+        description: Country Code,
+        example: Perferendis pariatur ut non non quia rerum.
+        type: string
+      houseNumber:
+        description: House number,
+        example: Ut architecto est commodi qui dolorum dignissimos.
+        type: string
+      street:
+        description: Street,
+        example: Illum eos consectetur ducimus.
+        type: string
+      type:
+        description: Type of address = [„MAILING_ADDRESS“ or „REGISTRATION_ADDRESS“]
+        example: Quod sunt quia.
+        type: string
+      zip:
+        description: Zip code,
+        example: Reiciendis non quae velit iste impedit debitis.
+        type: string
+    required:
+    - street
+    - houseNumber
+    - zip
+    - city
+    - country
+    - type
+    title: 'Mediatype identifier: application/vnd.opendb.hack.address+json; view=default'
+    type: object
+  OpendbHackAddressCollection:
+    description: OpendbHackAddressCollection is the media type for an array of OpendbHackAddress
+      (default view)
+    example:
+    - city: Itaque nisi possimus aut vel vel.
+      country: Perferendis pariatur ut non non quia rerum.
+      houseNumber: Ut architecto est commodi qui dolorum dignissimos.
+      street: Illum eos consectetur ducimus.
+      type: Quod sunt quia.
+      zip: Reiciendis non quae velit iste impedit debitis.
+    - city: Itaque nisi possimus aut vel vel.
+      country: Perferendis pariatur ut non non quia rerum.
+      houseNumber: Ut architecto est commodi qui dolorum dignissimos.
+      street: Illum eos consectetur ducimus.
+      type: Quod sunt quia.
+      zip: Reiciendis non quae velit iste impedit debitis.
+    - city: Itaque nisi possimus aut vel vel.
+      country: Perferendis pariatur ut non non quia rerum.
+      houseNumber: Ut architecto est commodi qui dolorum dignissimos.
+      street: Illum eos consectetur ducimus.
+      type: Quod sunt quia.
+      zip: Reiciendis non quae velit iste impedit debitis.
+    items:
+      $ref: '#/definitions/OpendbHackAddress'
+    title: 'Mediatype identifier: application/vnd.opendb.hack.address+json; type=collection'
+    type: array
+  OpendbHackCashaccount:
+    description: OpendbHackCashaccount media type (default view)
+    example:
+      balance: 0.6645298
+      iban: Ullam harum similique ut.
+      productDescription: Dolores iusto ipsam eum sint ut.
+    properties:
+      balance:
+        description: Booked balance in EUR
+        example: 0.6645298
+        format: double
+        type: number
+      iban:
+        description: IBAN of the cash account
+        example: Ullam harum similique ut.
+        type: string
+      productDescription:
+        description: Description of the product
+        example: Dolores iusto ipsam eum sint ut.
+        type: string
+    required:
+    - iban
+    - balance
+    - productDescription
+    title: 'Mediatype identifier: application/vnd.opendb.hack.cashaccount+json; view=default'
+    type: object
+  OpendbHackCashaccountCollection:
+    description: OpendbHackCashaccountCollection is the media type for an array of
+      OpendbHackCashaccount (default view)
+    example:
+    - balance: 0.6645298
+      iban: Ullam harum similique ut.
+      productDescription: Dolores iusto ipsam eum sint ut.
+    - balance: 0.6645298
+      iban: Ullam harum similique ut.
+      productDescription: Dolores iusto ipsam eum sint ut.
+    items:
+      $ref: '#/definitions/OpendbHackCashaccount'
+    title: 'Mediatype identifier: application/vnd.opendb.hack.cashaccount+json; type=collection'
+    type: array
+  OpendbHackTransaction:
+    description: A bottle of wine (default view)
+    example:
+      amount: 0.7856235
+      counterPartyIban: Aut odit tempora est.
+      counterPartyName: Est sapiente harum.
+      date: Totam voluptatem ducimus unde alias.
+      usage: Voluptatem ipsa dolorum rem libero.
+    properties:
+      amount:
+        description: Amount of the transaction. If the amount is positive, the customer
+          received money, if the amount is negative the customer lost money,
+        example: 0.7856235
+        format: double
+        type: number
+      counterPartyIban:
+        description: IBAN of the counter party
+        example: Aut odit tempora est.
+        type: string
+      counterPartyName:
+        description: Name of the counter party
+        example: Est sapiente harum.
+        type: string
+      date:
+        description: Posting date in the format YYYY-MM-DD
+        example: Totam voluptatem ducimus unde alias.
+        type: string
+      usage:
+        description: Payment reference
+        example: Voluptatem ipsa dolorum rem libero.
+        type: string
+    required:
+    - amount
+    - date
+    title: 'Mediatype identifier: application/vnd.opendb.hack.transaction+json; view=default'
+    type: object
+  OpendbHackTransactionCollection:
+    description: OpendbHackTransactionCollection is the media type for an array of
+      OpendbHackTransaction (default view)
+    example:
+    - amount: 0.7856235
+      counterPartyIban: Aut odit tempora est.
+      counterPartyName: Est sapiente harum.
+      date: Totam voluptatem ducimus unde alias.
+      usage: Voluptatem ipsa dolorum rem libero.
+    - amount: 0.7856235
+      counterPartyIban: Aut odit tempora est.
+      counterPartyName: Est sapiente harum.
+      date: Totam voluptatem ducimus unde alias.
+      usage: Voluptatem ipsa dolorum rem libero.
+    items:
+      $ref: '#/definitions/OpendbHackTransaction'
+    title: 'Mediatype identifier: application/vnd.opendb.hack.transaction+json; type=collection'
+    type: array
+  OpendbHackUserinfo:
+    description: OpendbHackUserinfo media type (default view)
+    example:
+      dateOfBirth: Repellendus minus iure est eius voluptatem.
+      firstName: Reiciendis voluptatibus veritatis sit debitis totam.
+      gender: Et distinctio eius sit.
+      lastName: Reiciendis inventore praesentium.
+    properties:
+      dateOfBirth:
+        description: Birth date of the user in the format YYYY-MM-DD
+        example: Repellendus minus iure est eius voluptatem.
+        type: string
+      firstName:
+        description: First name of the user
+        example: Reiciendis voluptatibus veritatis sit debitis totam.
+        type: string
+      gender:
+        description: Gender of the user = [„MALE“ or „FEMALE“ or „UNKOWN“]
+        example: Et distinctio eius sit.
+        type: string
+      lastName:
+        description: Last name of the user
+        example: Reiciendis inventore praesentium.
+        type: string
+    required:
+    - firstName
+    - lastName
+    - dateOfBirth
+    - gender
+    title: 'Mediatype identifier: application/vnd.opendb.hack.userinfo+json'
+    type: object
+host: localhost:8880
+info:
+  description: 'Service to proxy '
+  title: The mock for opendb
+  version: ""
+paths:
+  /addresses:
+    get:
+      description: Get adresses
+      operationId: user#GetAddresses
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OpendbHackAddressCollection'
+      schemes:
+      - http
+      summary: GetAddresses user
+      tags:
+      - user
+  /cashAccounts:
+    get:
+      description: Cash accuonts
+      operationId: accounts#GetCashAccounts
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OpendbHackCashaccountCollection'
+      schemes:
+      - http
+      summary: GetCashAccounts accounts
+      tags:
+      - accounts
+  /transactions:
+    get:
+      description: Get all transactions
+      operationId: transactions#GetTransactions
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OpendbHackTransactionCollection'
+      schemes:
+      - http
+      summary: GetTransactions transactions
+      tags:
+      - transactions
+  /userInfo:
+    get:
+      description: Get User Info
+      operationId: user#GetUserInfo
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OpendbHackUserinfo'
+      schemes:
+      - http
+      summary: GetUserInfo user
+      tags:
+      - user
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+schemes:
+- http
+swagger: "2.0"

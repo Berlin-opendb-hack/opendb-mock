@@ -1,0 +1,5 @@
+package: github.com/Berlin-opendb-hack/opendb-mock
+import:
+- package: github.com/goadesign/goa
+  subpackages:
+  - '...'
