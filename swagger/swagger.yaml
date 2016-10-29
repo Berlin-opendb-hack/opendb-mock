@@ -114,35 +114,35 @@ definitions:
     title: 'Mediatype identifier: application/vnd.opendb.hack.cashaccount+json; type=collection'
     type: array
   OpendbHackTransaction:
-    description: A bottle of wine (default view)
+    description: OpendbHackTransaction media type (default view)
     example:
-      amount: 0.7856235
-      counterPartyIban: Aut odit tempora est.
-      counterPartyName: Est sapiente harum.
-      date: Totam voluptatem ducimus unde alias.
-      usage: Voluptatem ipsa dolorum rem libero.
+      amount: 0.38613048
+      counterPartyIban: Totam possimus et distinctio.
+      counterPartyName: Sit pariatur reiciendis inventore praesentium.
+      date: Ipsa sed dolores reiciendis voluptas.
+      usage: Tenetur laudantium atque quisquam omnis.
     properties:
       amount:
         description: Amount of the transaction. If the amount is positive, the customer
           received money, if the amount is negative the customer lost money,
-        example: 0.7856235
+        example: 0.38613048
         format: double
         type: number
       counterPartyIban:
         description: IBAN of the counter party
-        example: Aut odit tempora est.
+        example: Totam possimus et distinctio.
         type: string
       counterPartyName:
         description: Name of the counter party
-        example: Est sapiente harum.
+        example: Sit pariatur reiciendis inventore praesentium.
         type: string
       date:
         description: Posting date in the format YYYY-MM-DD
-        example: Totam voluptatem ducimus unde alias.
+        example: Ipsa sed dolores reiciendis voluptas.
         type: string
       usage:
         description: Payment reference
-        example: Voluptatem ipsa dolorum rem libero.
+        example: Tenetur laudantium atque quisquam omnis.
         type: string
     required:
     - amount
@@ -153,16 +153,11 @@ definitions:
     description: OpendbHackTransactionCollection is the media type for an array of
       OpendbHackTransaction (default view)
     example:
-    - amount: 0.7856235
-      counterPartyIban: Aut odit tempora est.
-      counterPartyName: Est sapiente harum.
-      date: Totam voluptatem ducimus unde alias.
-      usage: Voluptatem ipsa dolorum rem libero.
-    - amount: 0.7856235
-      counterPartyIban: Aut odit tempora est.
-      counterPartyName: Est sapiente harum.
-      date: Totam voluptatem ducimus unde alias.
-      usage: Voluptatem ipsa dolorum rem libero.
+    - amount: 0.38613048
+      counterPartyIban: Totam possimus et distinctio.
+      counterPartyName: Sit pariatur reiciendis inventore praesentium.
+      date: Ipsa sed dolores reiciendis voluptas.
+      usage: Tenetur laudantium atque quisquam omnis.
     items:
       $ref: '#/definitions/OpendbHackTransaction'
     title: 'Mediatype identifier: application/vnd.opendb.hack.transaction+json; type=collection'
@@ -170,26 +165,26 @@ definitions:
   OpendbHackUserinfo:
     description: OpendbHackUserinfo media type (default view)
     example:
-      dateOfBirth: Repellendus minus iure est eius voluptatem.
-      firstName: Reiciendis voluptatibus veritatis sit debitis totam.
-      gender: Et distinctio eius sit.
-      lastName: Reiciendis inventore praesentium.
+      dateOfBirth: Laborum debitis suscipit doloribus unde magnam ea.
+      firstName: Asperiores incidunt laborum.
+      gender: Numquam enim rerum velit recusandae suscipit enim.
+      lastName: Qui assumenda.
     properties:
       dateOfBirth:
         description: Birth date of the user in the format YYYY-MM-DD
-        example: Repellendus minus iure est eius voluptatem.
+        example: Laborum debitis suscipit doloribus unde magnam ea.
         type: string
       firstName:
         description: First name of the user
-        example: Reiciendis voluptatibus veritatis sit debitis totam.
+        example: Asperiores incidunt laborum.
         type: string
       gender:
         description: Gender of the user = [„MALE“ or „FEMALE“ or „UNKOWN“]
-        example: Et distinctio eius sit.
+        example: Numquam enim rerum velit recusandae suscipit enim.
         type: string
       lastName:
         description: Last name of the user
-        example: Reiciendis inventore praesentium.
+        example: Qui assumenda.
         type: string
     required:
     - firstName
@@ -197,6 +192,85 @@ definitions:
     - dateOfBirth
     - gender
     title: 'Mediatype identifier: application/vnd.opendb.hack.userinfo+json'
+    type: object
+  PostTransactionsTransactionsPayload:
+    example:
+      amount: Odit aut odit tempora.
+      creditorBIC: Et est.
+      creditorIBAN: Harum est totam voluptatem.
+      currency: Unde alias.
+      debtorBIC: Voluptatem ipsa dolorum rem libero.
+      debtorIBAN: Molestiae repellendus minus iure.
+      remittanceInformation: Eius voluptatem consequuntur reiciendis voluptatibus
+        veritatis.
+    properties:
+      amount:
+        example: Odit aut odit tempora.
+        type: string
+      creditorBIC:
+        example: Et est.
+        type: string
+      creditorIBAN:
+        example: Harum est totam voluptatem.
+        type: string
+      currency:
+        example: Unde alias.
+        type: string
+      debtorBIC:
+        example: Voluptatem ipsa dolorum rem libero.
+        type: string
+      debtorIBAN:
+        example: Molestiae repellendus minus iure.
+        type: string
+      remittanceInformation:
+        example: Eius voluptatem consequuntur reiciendis voluptatibus veritatis.
+        type: string
+    required:
+    - amount
+    - creditorIBAN
+    - creditorBIC
+    - debtorIBAN
+    - debtorBIC
+    - currency
+    - remittanceInformation
+    title: PostTransactionsTransactionsPayload
+    type: object
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1.458609e+09
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1.458609e+09
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error'
     type: object
 host: localhost:8880
 info:
@@ -213,6 +287,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/OpendbHackAddressCollection'
+        "201":
+          description: Created
       schemes:
       - http
       summary: GetAddresses user
@@ -222,13 +298,26 @@ paths:
     get:
       description: Cash accuonts
       operationId: accounts#GetCashAccounts
+      parameters:
+      - in: query
+        name: iban
+        required: false
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/OpendbHackCashaccountCollection'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
       schemes:
       - http
+      security:
+      - token: []
       summary: GetCashAccounts accounts
       tags:
       - accounts
@@ -236,14 +325,52 @@ paths:
     get:
       description: Get all transactions
       operationId: transactions#GetTransactions
+      parameters:
+      - in: query
+        name: iban
+        required: false
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/OpendbHackTransactionCollection'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
       schemes:
       - http
+      security:
+      - token: []
       summary: GetTransactions transactions
+      tags:
+      - transactions
+    post:
+      description: Create a transaction
+      operationId: transactions#PostTransactions
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/PostTransactionsTransactionsPayload'
+      responses:
+        "201":
+          description: Created
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      security:
+      - token: []
+      summary: PostTransactions transactions
       tags:
       - transactions
   /userInfo:
@@ -265,6 +392,16 @@ produces:
 - application/xml
 - application/gob
 - application/x-gob
+responses:
+  Created:
+    description: Created
+  Unauthorized:
+    description: Unauthorized
 schemes:
 - http
+securityDefinitions:
+  token:
+    in: header
+    name: token
+    type: apiKey
 swagger: "2.0"

@@ -3,3 +3,4 @@ import:
 - package: github.com/goadesign/goa
   subpackages:
   - '...'
+- package: github.com/golang/mock

@@ -13,8 +13,8 @@ func GetCashAccountsAccountsPath() string {
 }
 
 // Cash accuonts
-func (c *Client) GetCashAccountsAccounts(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewGetCashAccountsAccountsRequest(ctx, path)
+func (c *Client) GetCashAccountsAccounts(ctx context.Context, path string, iban *string) (*http.Response, error) {
+	req, err := c.NewGetCashAccountsAccountsRequest(ctx, path, iban)
 	if err != nil {
 		return nil, err
 	}
@@ -22,15 +22,23 @@ func (c *Client) GetCashAccountsAccounts(ctx context.Context, path string) (*htt
 }
 
 // NewGetCashAccountsAccountsRequest create the request corresponding to the GetCashAccounts action endpoint of the accounts resource.
-func (c *Client) NewGetCashAccountsAccountsRequest(ctx context.Context, path string) (*http.Request, error) {
+func (c *Client) NewGetCashAccountsAccountsRequest(ctx context.Context, path string, iban *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	values := u.Query()
+	if iban != nil {
+		values.Set("iban", *iban)
+	}
+	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+	if c.TokenSigner != nil {
+		c.TokenSigner.Sign(req)
 	}
 	return req, nil
 }

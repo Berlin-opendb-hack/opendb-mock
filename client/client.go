@@ -8,8 +8,9 @@ import (
 // Client is the opendb service client.
 type Client struct {
 	*goaclient.Client
-	Encoder *goa.HTTPEncoder
-	Decoder *goa.HTTPDecoder
+	TokenSigner goaclient.Signer
+	Encoder     *goa.HTTPEncoder
+	Decoder     *goa.HTTPDecoder
 }
 
 // New instantiates the client.
@@ -33,4 +34,9 @@ func New(c goaclient.Doer) *Client {
 	client.Decoder.Register(goa.NewJSONDecoder, "*/*")
 
 	return client
+}
+
+// SetTokenSigner sets the request signer for the token security scheme.
+func (c *Client) SetTokenSigner(signer goaclient.Signer) {
+	c.TokenSigner = signer
 }

@@ -17,6 +17,13 @@ import (
 	"net/http"
 )
 
+// DecodeErrorResponse decodes the ErrorResponse instance encoded in resp body.
+func (c *Client) DecodeErrorResponse(resp *http.Response) (*goa.ErrorResponse, error) {
+	var decoded goa.ErrorResponse
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // OpendbHackAddress media type (default view)
 //
 // Identifier: application/vnd.opendb.hack.address+json; view=default
@@ -161,7 +168,38 @@ func (c *Client) DecodeOpendbHackCashaccountCollection(resp *http.Response) (Ope
 	return decoded, err
 }
 
-// A bottle of wine (default view)
+// OpendbHackSepa media type (default view)
+//
+// Identifier: application/vnd.opendb.hack.sepa+json; view=default
+type OpendbHackSepa struct {
+	Amount                string `form:"amount" json:"amount" xml:"amount"`
+	Currency              string `form:"currency" json:"currency" xml:"currency"`
+	RemittanceInformation string `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
+}
+
+// Validate validates the OpendbHackSepa media type instance.
+func (mt *OpendbHackSepa) Validate() (err error) {
+	if mt.Amount == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "amount"))
+	}
+	if mt.Currency == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "currency"))
+	}
+	if mt.RemittanceInformation == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "remittanceInformation"))
+	}
+
+	return
+}
+
+// DecodeOpendbHackSepa decodes the OpendbHackSepa instance encoded in resp body.
+func (c *Client) DecodeOpendbHackSepa(resp *http.Response) (*OpendbHackSepa, error) {
+	var decoded OpendbHackSepa
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// OpendbHackTransaction media type (default view)
 //
 // Identifier: application/vnd.opendb.hack.transaction+json; view=default
 type OpendbHackTransaction struct {

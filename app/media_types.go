@@ -130,7 +130,31 @@ func (mt OpendbHackCashaccountCollection) Validate() (err error) {
 	return
 }
 
-// A bottle of wine (default view)
+// OpendbHackSepa media type (default view)
+//
+// Identifier: application/vnd.opendb.hack.sepa+json; view=default
+type OpendbHackSepa struct {
+	Amount                string `form:"amount" json:"amount" xml:"amount"`
+	Currency              string `form:"currency" json:"currency" xml:"currency"`
+	RemittanceInformation string `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
+}
+
+// Validate validates the OpendbHackSepa media type instance.
+func (mt *OpendbHackSepa) Validate() (err error) {
+	if mt.Amount == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "amount"))
+	}
+	if mt.Currency == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "currency"))
+	}
+	if mt.RemittanceInformation == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "remittanceInformation"))
+	}
+
+	return
+}
+
+// OpendbHackTransaction media type (default view)
 //
 // Identifier: application/vnd.opendb.hack.transaction+json; view=default
 type OpendbHackTransaction struct {

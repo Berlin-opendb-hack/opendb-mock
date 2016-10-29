@@ -2,6 +2,7 @@ package cli
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Berlin-opendb-hack/opendb-mock/client"
 	"github.com/goadesign/goa"
 	goaclient "github.com/goadesign/goa/client"
@@ -18,11 +19,20 @@ import (
 type (
 	// GetCashAccountsAccountsCommand is the command line data structure for the GetCashAccounts action of accounts
 	GetCashAccountsAccountsCommand struct {
+		Iban        string
 		PrettyPrint bool
 	}
 
 	// GetTransactionsTransactionsCommand is the command line data structure for the GetTransactions action of transactions
 	GetTransactionsTransactionsCommand struct {
+		Iban        string
+		PrettyPrint bool
+	}
+
+	// PostTransactionsTransactionsCommand is the command line data structure for the PostTransactions action of transactions
+	PostTransactionsTransactionsCommand struct {
+		Payload     string
+		ContentType string
 		PrettyPrint bool
 	}
 
@@ -94,6 +104,33 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp4.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "postTransactions",
+		Short: `Create a transaction`,
+	}
+	tmp5 := new(PostTransactionsTransactionsCommand)
+	sub = &cobra.Command{
+		Use:   `transactions ["/transactions"]`,
+		Short: ``,
+		Long: `
+
+Payload example:
+
+{
+   "amount": "Odit aut odit tempora.",
+   "creditorBIC": "Et est.",
+   "creditorIBAN": "Harum est totam voluptatem.",
+   "currency": "Unde alias.",
+   "debtorBIC": "Voluptatem ipsa dolorum rem libero.",
+   "debtorIBAN": "Molestiae repellendus minus iure.",
+   "remittanceInformation": "Eius voluptatem consequuntur reiciendis voluptatibus veritatis."
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
+	}
+	tmp5.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -261,7 +298,7 @@ func (cmd *GetCashAccountsAccountsCommand) Run(c *client.Client, args []string) 
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.GetCashAccountsAccounts(ctx, path)
+	resp, err := c.GetCashAccountsAccounts(ctx, path, stringFlagVal("iban", cmd.Iban))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -273,6 +310,8 @@ func (cmd *GetCashAccountsAccountsCommand) Run(c *client.Client, args []string) 
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *GetCashAccountsAccountsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var iban string
+	cc.Flags().StringVar(&cmd.Iban, "iban", iban, ``)
 }
 
 // Run makes the HTTP request corresponding to the GetTransactionsTransactionsCommand command.
@@ -285,7 +324,7 @@ func (cmd *GetTransactionsTransactionsCommand) Run(c *client.Client, args []stri
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.GetTransactionsTransactions(ctx, path)
+	resp, err := c.GetTransactionsTransactions(ctx, path, stringFlagVal("iban", cmd.Iban))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -297,6 +336,41 @@ func (cmd *GetTransactionsTransactionsCommand) Run(c *client.Client, args []stri
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *GetTransactionsTransactionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var iban string
+	cc.Flags().StringVar(&cmd.Iban, "iban", iban, ``)
+}
+
+// Run makes the HTTP request corresponding to the PostTransactionsTransactionsCommand command.
+func (cmd *PostTransactionsTransactionsCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/transactions"
+	}
+	var payload client.PostTransactionsTransactionsPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.PostTransactionsTransactions(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *PostTransactionsTransactionsCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 }
 
 // Run makes the HTTP request corresponding to the GetAddressesUserCommand command.

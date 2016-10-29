@@ -6,6 +6,8 @@ import (
 	"github.com/Berlin-opendb-hack/opendb-mock/app"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	"net/http"
+	"golang.org/x/net/context"
 )
 
 func main() {
@@ -17,6 +19,7 @@ func main() {
 	service.Use(middleware.LogRequest(true))
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
+	app.UseTokenMiddleware(service, AuthMiddleWare)
 
 	// Mount "accounts" controller
 	c := NewAccountsController(service)
@@ -33,3 +36,17 @@ func main() {
 		service.LogError("startup", "err", err)
 	}
 }
+
+func AuthMiddleWare(h goa.Handler) goa.Handler {
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		token := req.Header.Get("X-Token")
+		if ("" == token) {
+			return goa.ErrUnauthorized("Token header required")
+		}
+		newctx := context.WithValue(ctx, "token", token)
+
+		return h(newctx, rw, req)
+
+	}
+}
+

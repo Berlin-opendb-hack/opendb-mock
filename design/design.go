@@ -11,28 +11,65 @@ var _ = API("opendb", func() {
 	Description("Service to proxy ")        // and exactly one API definition appearing in
 	Scheme("http")                             // the design.
 	Host("localhost:8880")
+	APIKeySecurity("token", func() {
+		Header("token")
+	})
+
 })
 
 var _ = Resource("transactions", func() {
 	BasePath("/transactions")
-
+	Security("token", func() {})
 	Action("GetTransactions", func() {
 		Description("Get all transactions")
 		Routing(GET("/"))
+		Params(func() {
+			Param("iban", String, func() {
+
+			})
+		})
 		Response(OK, func() {
 			Media(CollectionOf(TransactionMedia))
 		})
+		Response(Unauthorized)
+		Response(InternalServerError, func() {
+			Media(ErrorMedia)
+		})
+
+
+	})
+
+	Action("PostTransactions", func() {
+		Description("Create a transaction")
+		Routing(POST("/"))
+		Response(Created)
+		Response(Unauthorized)
+		Response(InternalServerError, func() {
+			Media(ErrorMedia)
+		})
+		Payload(SepaTransferMedia)
 	})
 })
 var _ = Resource("accounts", func() {
 	BasePath("/cashAccounts")
+	Security("token", func() {})
 	Action("GetCashAccounts", func() {
 		Description("Cash accuonts")
 		Routing(GET("/"))
+		Params(func() {
+			Param("iban", String, func() {
+
+			})
+		})
 		Response(OK, func() {
 			Media(CollectionOf(CashAccountMedia))
 		})
+		Response(Unauthorized)
+		Response(InternalServerError, func() {
+			Media(ErrorMedia)
+		})
 	})
+
 })
 var _ = Resource("user", func() {
 	BasePath("/")
@@ -43,7 +80,9 @@ var _ = Resource("user", func() {
 		Response(OK, func() {
 			Media(CollectionOf(AddressMedia))
 		})
+		Response(Created)
 	})
+
 	Action("GetUserInfo", func() {
 		Description("Get User Info")
 		Routing(GET("userInfo"))
@@ -53,8 +92,35 @@ var _ = Resource("user", func() {
 	})
 })
 
+var SepaTransferMedia = MediaType("application/vnd.opendb.hack.sepa+json", func() {
+	Description("")
+	Attributes(func() {
+		Attribute("amount", String, "")
+		Attribute("creditorIBAN", String, "")
+		Attribute("creditorBIC", String, "")
+		Attribute("debtorIBAN", String, "")
+		Attribute("debtorBIC", String, "")
+		Attribute("currency", String, "")
+		Attribute("remittanceInformation", String, "")
+	})
+
+	Required(
+		"amount",
+		"creditorIBAN",
+		"creditorBIC",
+		"debtorIBAN",
+		"debtorBIC",
+		"currency",
+		"remittanceInformation",
+	)
+	View("default", func() {
+		Attribute("amount")
+		Attribute("currency")
+		Attribute("remittanceInformation")
+	})
+})
+
 var TransactionMedia = MediaType("application/vnd.opendb.hack.transaction+json", func() {
-	Description("A bottle of wine")
 	Attributes(func() {
 		Attribute("amount", Number, "Amount of the transaction. If the amount is positive, the customer received money, if the amount is negative the customer lost money,")
 		Attribute("date", String, "Posting date in the format YYYY-MM-DD")
@@ -119,6 +185,7 @@ var AddressMedia = MediaType("application/vnd.opendb.hack.address+json", func() 
 
 	})
 })
+
 var CashAccountMedia = MediaType("application/vnd.opendb.hack.cashaccount+json", func() {
 	Attribute("iban", String, "IBAN of the cash account")
 	Attribute("balance", Number, "Booked balance in EUR")

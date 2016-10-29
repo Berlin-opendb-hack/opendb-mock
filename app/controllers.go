@@ -56,14 +56,16 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 		}
 		return ctrl.GetCashAccounts(rctx)
 	}
+	h = handleSecurity("token", h)
 	service.Mux.Handle("GET", "/cashAccounts", ctrl.MuxHandler("GetCashAccounts", h, nil))
-	service.LogInfo("mount", "ctrl", "Accounts", "action", "GetCashAccounts", "route", "GET /cashAccounts")
+	service.LogInfo("mount", "ctrl", "Accounts", "action", "GetCashAccounts", "route", "GET /cashAccounts", "security", "token")
 }
 
 // TransactionsController is the controller interface for the Transactions actions.
 type TransactionsController interface {
 	goa.Muxer
 	GetTransactions(*GetTransactionsTransactionsContext) error
+	PostTransactions(*PostTransactionsTransactionsContext) error
 }
 
 // MountTransactionsController "mounts" a Transactions resource controller on the given service.
@@ -83,8 +85,46 @@ func MountTransactionsController(service *goa.Service, ctrl TransactionsControll
 		}
 		return ctrl.GetTransactions(rctx)
 	}
+	h = handleSecurity("token", h)
 	service.Mux.Handle("GET", "/transactions", ctrl.MuxHandler("GetTransactions", h, nil))
-	service.LogInfo("mount", "ctrl", "Transactions", "action", "GetTransactions", "route", "GET /transactions")
+	service.LogInfo("mount", "ctrl", "Transactions", "action", "GetTransactions", "route", "GET /transactions", "security", "token")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewPostTransactionsTransactionsContext(ctx, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*PostTransactionsTransactionsPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.PostTransactions(rctx)
+	}
+	h = handleSecurity("token", h)
+	service.Mux.Handle("POST", "/transactions", ctrl.MuxHandler("PostTransactions", h, unmarshalPostTransactionsTransactionsPayload))
+	service.LogInfo("mount", "ctrl", "Transactions", "action", "PostTransactions", "route", "POST /transactions", "security", "token")
+}
+
+// unmarshalPostTransactionsTransactionsPayload unmarshals the request body into the context request data Payload field.
+func unmarshalPostTransactionsTransactionsPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &postTransactionsTransactionsPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // UserController is the controller interface for the User actions.

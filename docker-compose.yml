@@ -1,0 +1,10 @@
+version: '2'
+services:
+  opendb_mock:
+    build: .
+    ports:
+     - "8880:8880"
+    environment:
+      OPENDB_SCHEME: "https"
+      OPENDB_HOST: "simulator-api.db.com"
+      OPENDB_PATH: "/gw/dbapi/v1"
