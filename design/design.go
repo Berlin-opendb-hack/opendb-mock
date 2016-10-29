@@ -43,6 +43,9 @@ var _ = Resource("transactions", func() {
 		Description("Create a transaction")
 		Routing(POST("/"))
 		Response(Created)
+		Response(BadRequest, func() {
+			Media(ErrorMedia)
+		})
 		Response(Unauthorized)
 		Response(InternalServerError, func() {
 			Media(ErrorMedia)
@@ -98,8 +101,10 @@ var SepaTransferMedia = MediaType("application/vnd.opendb.hack.sepa+json", func(
 		Attribute("amount", String, "")
 		Attribute("creditorIBAN", String, "")
 		Attribute("creditorBIC", String, "")
+		Attribute("creditorName", String, "")
 		Attribute("debtorIBAN", String, "")
 		Attribute("debtorBIC", String, "")
+		Attribute("debtorName", String, "")
 		Attribute("currency", String, "")
 		Attribute("remittanceInformation", String, "")
 	})

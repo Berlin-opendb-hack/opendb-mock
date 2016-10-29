@@ -25,10 +25,10 @@ type Account struct {
 func (a Account) Balance() decimal.Decimal {
 	total := decimal.Zero
 	for _, credit := range a.credits {
-		total.Add(credit.Amount)
+		total = total.Add(credit.Amount)
 	}
 	for _, debit := range a.debits {
-		total.Sub(debit.Amount)
+		total = total.Sub(debit.Amount)
 	}
 
 	return total

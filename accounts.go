@@ -9,6 +9,7 @@ import (
 	"os"
 	"github.com/Berlin-opendb-hack/opendb-mock/pkg/accounting"
 	"github.com/shopspring/decimal"
+	"fmt"
 )
 
 // AccountsController implements the accounts resource.
@@ -44,12 +45,15 @@ func (c *AccountsController) GetCashAccounts(ctx *app.GetCashAccountsAccountsCon
 
 	for _, cashAccount := range cashAccounts {
 		account := ledger.FindAccount(cashAccount.Iban)
-		if nil == account {
-			account = ledger.CreateAccount(cashAccount.Iban)
+		balance := cashAccount.Balance
+		if nil != account {
+			fmt.Println("Found account")
+			realBalance := decimal.NewFromFloat(cashAccount.Balance)
+			fmt.Printf("%+v\n", account)
+			fmt.Printf("Balance : <%s>", account.Balance().String())
+			realBalance = realBalance.Add(account.Balance())
+			balance, _ = realBalance.Float64()
 		}
-		realBalance := decimal.NewFromFloat(cashAccount.Balance)
-		realBalance = realBalance.Add(account.Balance())
-		balance, _ := realBalance.Float64()
 		resAccount := app.OpendbHackCashaccount{
 			Iban: cashAccount.Iban,
 			Balance: balance,

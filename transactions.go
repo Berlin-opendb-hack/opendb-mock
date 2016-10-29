@@ -8,6 +8,7 @@ import (
 	"github.com/Berlin-opendb-hack/opendb-mock/pkg/accounting"
 	"github.com/Berlin-opendb-hack/opendb-mock/pkg/api"
 	"net/http"
+	"time"
 )
 
 // TransactionsController implements the transactions resource.
@@ -84,17 +85,25 @@ func (c *TransactionsController) GetTransactions(ctx *app.GetTransactionsTransac
 			}
 			res = append(res, &transaction)
 		}
-
 	}
 	return ctx.OK(res)
 }
 
 // PostTransactions runs the PostTransactions action.
 func (c *TransactionsController) PostTransactions(ctx *app.PostTransactionsTransactionsContext) error {
-	// TransactionsController_PostTransactions: start_implement
-
-	// Put your logic here
-
-	// TransactionsController_PostTransactions: end_implement
-	return nil
+	token := ctx.Value("token")
+	if nil == token {
+		return ctx.Unauthorized()
+	}
+	ledger := accounting.GetLedger()
+	sepaTransfer := ctx.Payload
+	validationErr := sepaTransfer.Validate()
+	if (nil != validationErr) {
+		return ctx.BadRequest(validationErr)
+	}
+	err := ledger.Book(sepaTransfer.CreditorIBAN, sepaTransfer.DebtorIBAN, sepaTransfer.Amount, sepaTransfer.Currency, sepaTransfer.RemittanceInformation, time.Now().Format("2006-01-02"))
+	if (nil != err) {
+		return ctx.InternalServerError(err)
+	}
+	return ctx.Created()
 }

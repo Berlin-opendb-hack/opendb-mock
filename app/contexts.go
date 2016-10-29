@@ -235,6 +235,12 @@ func (ctx *PostTransactionsTransactionsContext) Created() error {
 	return nil
 }
 
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *PostTransactionsTransactionsContext) BadRequest(r error) error {
+	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
 // Unauthorized sends a HTTP response with status code 401.
 func (ctx *PostTransactionsTransactionsContext) Unauthorized() error {
 	ctx.ResponseData.WriteHeader(401)
