@@ -116,33 +116,33 @@ definitions:
   OpendbHackTransaction:
     description: OpendbHackTransaction media type (default view)
     example:
-      amount: 0.38613048
-      counterPartyIban: Totam possimus et distinctio.
-      counterPartyName: Sit pariatur reiciendis inventore praesentium.
-      date: Ipsa sed dolores reiciendis voluptas.
-      usage: Tenetur laudantium atque quisquam omnis.
+      amount: 0.0378779
+      counterPartyIban: Sed dolores reiciendis.
+      counterPartyName: Autem tenetur laudantium atque quisquam.
+      date: Dolor repellat laborum debitis.
+      usage: Doloribus unde magnam ea.
     properties:
       amount:
         description: Amount of the transaction. If the amount is positive, the customer
           received money, if the amount is negative the customer lost money,
-        example: 0.38613048
+        example: 0.0378779
         format: double
         type: number
       counterPartyIban:
         description: IBAN of the counter party
-        example: Totam possimus et distinctio.
+        example: Sed dolores reiciendis.
         type: string
       counterPartyName:
         description: Name of the counter party
-        example: Sit pariatur reiciendis inventore praesentium.
+        example: Autem tenetur laudantium atque quisquam.
         type: string
       date:
         description: Posting date in the format YYYY-MM-DD
-        example: Ipsa sed dolores reiciendis voluptas.
+        example: Dolor repellat laborum debitis.
         type: string
       usage:
         description: Payment reference
-        example: Tenetur laudantium atque quisquam omnis.
+        example: Doloribus unde magnam ea.
         type: string
     required:
     - amount
@@ -153,11 +153,11 @@ definitions:
     description: OpendbHackTransactionCollection is the media type for an array of
       OpendbHackTransaction (default view)
     example:
-    - amount: 0.38613048
-      counterPartyIban: Totam possimus et distinctio.
-      counterPartyName: Sit pariatur reiciendis inventore praesentium.
-      date: Ipsa sed dolores reiciendis voluptas.
-      usage: Tenetur laudantium atque quisquam omnis.
+    - amount: 0.0378779
+      counterPartyIban: Sed dolores reiciendis.
+      counterPartyName: Autem tenetur laudantium atque quisquam.
+      date: Dolor repellat laborum debitis.
+      usage: Doloribus unde magnam ea.
     items:
       $ref: '#/definitions/OpendbHackTransaction'
     title: 'Mediatype identifier: application/vnd.opendb.hack.transaction+json; type=collection'
@@ -165,26 +165,26 @@ definitions:
   OpendbHackUserinfo:
     description: OpendbHackUserinfo media type (default view)
     example:
-      dateOfBirth: Laborum debitis suscipit doloribus unde magnam ea.
-      firstName: Asperiores incidunt laborum.
-      gender: Numquam enim rerum velit recusandae suscipit enim.
-      lastName: Qui assumenda.
+      dateOfBirth: Incidunt laborum aperiam numquam enim rerum.
+      firstName: Recusandae suscipit enim.
+      gender: Qui assumenda.
+      lastName: Atque voluptates dolores sit accusantium aut.
     properties:
       dateOfBirth:
         description: Birth date of the user in the format YYYY-MM-DD
-        example: Laborum debitis suscipit doloribus unde magnam ea.
+        example: Incidunt laborum aperiam numquam enim rerum.
         type: string
       firstName:
         description: First name of the user
-        example: Asperiores incidunt laborum.
+        example: Recusandae suscipit enim.
         type: string
       gender:
         description: Gender of the user = [„MALE“ or „FEMALE“ or „UNKOWN“]
-        example: Numquam enim rerum velit recusandae suscipit enim.
+        example: Qui assumenda.
         type: string
       lastName:
         description: Last name of the user
-        example: Qui assumenda.
+        example: Atque voluptates dolores sit accusantium aut.
         type: string
     required:
     - firstName
@@ -198,11 +198,12 @@ definitions:
       amount: Odit aut odit tempora.
       creditorBIC: Et est.
       creditorIBAN: Harum est totam voluptatem.
-      currency: Unde alias.
-      debtorBIC: Voluptatem ipsa dolorum rem libero.
-      debtorIBAN: Molestiae repellendus minus iure.
-      remittanceInformation: Eius voluptatem consequuntur reiciendis voluptatibus
-        veritatis.
+      creditorName: Unde alias.
+      currency: Voluptatem ipsa dolorum rem libero.
+      debtorBIC: Molestiae repellendus minus iure.
+      debtorIBAN: Eius voluptatem consequuntur reiciendis voluptatibus veritatis.
+      debtorName: Debitis totam possimus et distinctio.
+      remittanceInformation: Sit pariatur reiciendis inventore praesentium.
     properties:
       amount:
         example: Odit aut odit tempora.
@@ -213,17 +214,23 @@ definitions:
       creditorIBAN:
         example: Harum est totam voluptatem.
         type: string
-      currency:
+      creditorName:
         example: Unde alias.
         type: string
-      debtorBIC:
+      currency:
         example: Voluptatem ipsa dolorum rem libero.
         type: string
-      debtorIBAN:
+      debtorBIC:
         example: Molestiae repellendus minus iure.
         type: string
-      remittanceInformation:
+      debtorIBAN:
         example: Eius voluptatem consequuntur reiciendis voluptatibus veritatis.
+        type: string
+      debtorName:
+        example: Debitis totam possimus et distinctio.
+        type: string
+      remittanceInformation:
+        example: Sit pariatur reiciendis inventore praesentium.
         type: string
     required:
     - amount

@@ -131,9 +131,11 @@ type postTransactionsTransactionsPayload struct {
 	Amount                *string `form:"amount,omitempty" json:"amount,omitempty" xml:"amount,omitempty"`
 	CreditorBIC           *string `form:"creditorBIC,omitempty" json:"creditorBIC,omitempty" xml:"creditorBIC,omitempty"`
 	CreditorIBAN          *string `form:"creditorIBAN,omitempty" json:"creditorIBAN,omitempty" xml:"creditorIBAN,omitempty"`
+	CreditorName          *string `form:"creditorName,omitempty" json:"creditorName,omitempty" xml:"creditorName,omitempty"`
 	Currency              *string `form:"currency,omitempty" json:"currency,omitempty" xml:"currency,omitempty"`
 	DebtorBIC             *string `form:"debtorBIC,omitempty" json:"debtorBIC,omitempty" xml:"debtorBIC,omitempty"`
 	DebtorIBAN            *string `form:"debtorIBAN,omitempty" json:"debtorIBAN,omitempty" xml:"debtorIBAN,omitempty"`
+	DebtorName            *string `form:"debtorName,omitempty" json:"debtorName,omitempty" xml:"debtorName,omitempty"`
 	RemittanceInformation *string `form:"remittanceInformation,omitempty" json:"remittanceInformation,omitempty" xml:"remittanceInformation,omitempty"`
 }
 
@@ -176,6 +178,9 @@ func (payload *postTransactionsTransactionsPayload) Publicize() *PostTransaction
 	if payload.CreditorIBAN != nil {
 		pub.CreditorIBAN = *payload.CreditorIBAN
 	}
+	if payload.CreditorName != nil {
+		pub.CreditorName = payload.CreditorName
+	}
 	if payload.Currency != nil {
 		pub.Currency = *payload.Currency
 	}
@@ -185,6 +190,9 @@ func (payload *postTransactionsTransactionsPayload) Publicize() *PostTransaction
 	if payload.DebtorIBAN != nil {
 		pub.DebtorIBAN = *payload.DebtorIBAN
 	}
+	if payload.DebtorName != nil {
+		pub.DebtorName = payload.DebtorName
+	}
 	if payload.RemittanceInformation != nil {
 		pub.RemittanceInformation = *payload.RemittanceInformation
 	}
@@ -193,13 +201,15 @@ func (payload *postTransactionsTransactionsPayload) Publicize() *PostTransaction
 
 // PostTransactionsTransactionsPayload is the transactions PostTransactions action payload.
 type PostTransactionsTransactionsPayload struct {
-	Amount                string `form:"amount" json:"amount" xml:"amount"`
-	CreditorBIC           string `form:"creditorBIC" json:"creditorBIC" xml:"creditorBIC"`
-	CreditorIBAN          string `form:"creditorIBAN" json:"creditorIBAN" xml:"creditorIBAN"`
-	Currency              string `form:"currency" json:"currency" xml:"currency"`
-	DebtorBIC             string `form:"debtorBIC" json:"debtorBIC" xml:"debtorBIC"`
-	DebtorIBAN            string `form:"debtorIBAN" json:"debtorIBAN" xml:"debtorIBAN"`
-	RemittanceInformation string `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
+	Amount                string  `form:"amount" json:"amount" xml:"amount"`
+	CreditorBIC           string  `form:"creditorBIC" json:"creditorBIC" xml:"creditorBIC"`
+	CreditorIBAN          string  `form:"creditorIBAN" json:"creditorIBAN" xml:"creditorIBAN"`
+	CreditorName          *string `form:"creditorName,omitempty" json:"creditorName,omitempty" xml:"creditorName,omitempty"`
+	Currency              string  `form:"currency" json:"currency" xml:"currency"`
+	DebtorBIC             string  `form:"debtorBIC" json:"debtorBIC" xml:"debtorBIC"`
+	DebtorIBAN            string  `form:"debtorIBAN" json:"debtorIBAN" xml:"debtorIBAN"`
+	DebtorName            *string `form:"debtorName,omitempty" json:"debtorName,omitempty" xml:"debtorName,omitempty"`
+	RemittanceInformation string  `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
 }
 
 // Validate runs the validation rules defined in the design.

@@ -122,10 +122,12 @@ Payload example:
    "amount": "Odit aut odit tempora.",
    "creditorBIC": "Et est.",
    "creditorIBAN": "Harum est totam voluptatem.",
-   "currency": "Unde alias.",
-   "debtorBIC": "Voluptatem ipsa dolorum rem libero.",
-   "debtorIBAN": "Molestiae repellendus minus iure.",
-   "remittanceInformation": "Eius voluptatem consequuntur reiciendis voluptatibus veritatis."
+   "creditorName": "Unde alias.",
+   "currency": "Voluptatem ipsa dolorum rem libero.",
+   "debtorBIC": "Molestiae repellendus minus iure.",
+   "debtorIBAN": "Eius voluptatem consequuntur reiciendis voluptatibus veritatis.",
+   "debtorName": "Debitis totam possimus et distinctio.",
+   "remittanceInformation": "Sit pariatur reiciendis inventore praesentium."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}

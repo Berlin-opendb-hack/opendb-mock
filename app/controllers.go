@@ -14,6 +14,7 @@ package app
 
 import (
 	"github.com/goadesign/goa"
+	"github.com/goadesign/goa/cors"
 	"golang.org/x/net/context"
 	"net/http"
 )
@@ -43,6 +44,7 @@ type AccountsController interface {
 func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/cashAccounts", ctrl.MuxHandler("preflight", handleAccountsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -56,9 +58,46 @@ func MountAccountsController(service *goa.Service, ctrl AccountsController) {
 		}
 		return ctrl.GetCashAccounts(rctx)
 	}
+	h = handleAccountsOrigin(h)
 	h = handleSecurity("token", h)
 	service.Mux.Handle("GET", "/cashAccounts", ctrl.MuxHandler("GetCashAccounts", h, nil))
 	service.LogInfo("mount", "ctrl", "Accounts", "action", "GetCashAccounts", "route", "GET /cashAccounts", "security", "token")
+}
+
+// handleAccountsOrigin applies the CORS response headers corresponding to the origin.
+func handleAccountsOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost:8089") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }
 
 // TransactionsController is the controller interface for the Transactions actions.
@@ -72,6 +111,7 @@ type TransactionsController interface {
 func MountTransactionsController(service *goa.Service, ctrl TransactionsController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/transactions", ctrl.MuxHandler("preflight", handleTransactionsOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -85,6 +125,7 @@ func MountTransactionsController(service *goa.Service, ctrl TransactionsControll
 		}
 		return ctrl.GetTransactions(rctx)
 	}
+	h = handleTransactionsOrigin(h)
 	h = handleSecurity("token", h)
 	service.Mux.Handle("GET", "/transactions", ctrl.MuxHandler("GetTransactions", h, nil))
 	service.LogInfo("mount", "ctrl", "Transactions", "action", "GetTransactions", "route", "GET /transactions", "security", "token")
@@ -107,9 +148,46 @@ func MountTransactionsController(service *goa.Service, ctrl TransactionsControll
 		}
 		return ctrl.PostTransactions(rctx)
 	}
+	h = handleTransactionsOrigin(h)
 	h = handleSecurity("token", h)
 	service.Mux.Handle("POST", "/transactions", ctrl.MuxHandler("PostTransactions", h, unmarshalPostTransactionsTransactionsPayload))
 	service.LogInfo("mount", "ctrl", "Transactions", "action", "PostTransactions", "route", "POST /transactions", "security", "token")
+}
+
+// handleTransactionsOrigin applies the CORS response headers corresponding to the origin.
+func handleTransactionsOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost:8089") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }
 
 // unmarshalPostTransactionsTransactionsPayload unmarshals the request body into the context request data Payload field.
@@ -138,6 +216,8 @@ type UserController interface {
 func MountUserController(service *goa.Service, ctrl UserController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/addresses", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/userInfo", ctrl.MuxHandler("preflight", handleUserOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -151,6 +231,7 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		}
 		return ctrl.GetAddresses(rctx)
 	}
+	h = handleUserOrigin(h)
 	service.Mux.Handle("GET", "/addresses", ctrl.MuxHandler("GetAddresses", h, nil))
 	service.LogInfo("mount", "ctrl", "User", "action", "GetAddresses", "route", "GET /addresses")
 
@@ -166,6 +247,43 @@ func MountUserController(service *goa.Service, ctrl UserController) {
 		}
 		return ctrl.GetUserInfo(rctx)
 	}
+	h = handleUserOrigin(h)
 	service.Mux.Handle("GET", "/userInfo", ctrl.MuxHandler("GetUserInfo", h, nil))
 	service.LogInfo("mount", "ctrl", "User", "action", "GetUserInfo", "route", "GET /userInfo")
+}
+
+// handleUserOrigin applies the CORS response headers corresponding to the origin.
+func handleUserOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "http://localhost:8089") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Vary", "Origin")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Headers", "X-Token")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }

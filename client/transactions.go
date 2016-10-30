@@ -46,13 +46,15 @@ func (c *Client) NewGetTransactionsTransactionsRequest(ctx context.Context, path
 
 // PostTransactionsTransactionsPayload is the transactions PostTransactions action payload.
 type PostTransactionsTransactionsPayload struct {
-	Amount                string `form:"amount" json:"amount" xml:"amount"`
-	CreditorBIC           string `form:"creditorBIC" json:"creditorBIC" xml:"creditorBIC"`
-	CreditorIBAN          string `form:"creditorIBAN" json:"creditorIBAN" xml:"creditorIBAN"`
-	Currency              string `form:"currency" json:"currency" xml:"currency"`
-	DebtorBIC             string `form:"debtorBIC" json:"debtorBIC" xml:"debtorBIC"`
-	DebtorIBAN            string `form:"debtorIBAN" json:"debtorIBAN" xml:"debtorIBAN"`
-	RemittanceInformation string `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
+	Amount                string  `form:"amount" json:"amount" xml:"amount"`
+	CreditorBIC           string  `form:"creditorBIC" json:"creditorBIC" xml:"creditorBIC"`
+	CreditorIBAN          string  `form:"creditorIBAN" json:"creditorIBAN" xml:"creditorIBAN"`
+	CreditorName          *string `form:"creditorName,omitempty" json:"creditorName,omitempty" xml:"creditorName,omitempty"`
+	Currency              string  `form:"currency" json:"currency" xml:"currency"`
+	DebtorBIC             string  `form:"debtorBIC" json:"debtorBIC" xml:"debtorBIC"`
+	DebtorIBAN            string  `form:"debtorIBAN" json:"debtorIBAN" xml:"debtorIBAN"`
+	DebtorName            *string `form:"debtorName,omitempty" json:"debtorName,omitempty" xml:"debtorName,omitempty"`
+	RemittanceInformation string  `form:"remittanceInformation" json:"remittanceInformation" xml:"remittanceInformation"`
 }
 
 // PostTransactionsTransactionsPath computes a request path to the PostTransactions action of transactions.

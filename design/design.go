@@ -14,6 +14,12 @@ var _ = API("opendb", func() {
 	APIKeySecurity("token", func() {
 		Header("token")
 	})
+	Origin("http://localhost", func() {
+		Headers("X-Token")
+	})
+	Origin("http://localhost:8089", func() {
+		Headers("X-Token")
+	})
 
 })
 
